@@ -1,0 +1,7 @@
+-*- mode: markup; -*-
+
+* A simple Lisp implementation.
+
+This is a purely pedegagical Lisp to show how simple it is to
+implement a simple Lisp and to illustrate a few ideas about language
+implementation.
