@@ -21,10 +21,12 @@
     this.value = value;
   };
 
-  var nil = null;
+  var Nil = function () {};
+
+  var nil = new Nil();
 
   function isNil(o) {
-    return o === null;
+    return o === nil;
   }
 
   // Reader
@@ -36,7 +38,6 @@
 
   var digits = /^[0-9]+$/;
   var whitespace = /\s/;
-
 
   StringStream.prototype = {
     peek: function () { return this.s.charAt(this.pos); },
@@ -128,7 +129,40 @@
     return this[c] || readNumberOrSymbol;
   };
 
-  console.log(read(new StringStream('(123 456 abc "foobar")')));
+
+  // Printer
+
+  function print(sexp) { return sexp.print(); }
+
+  Cons.prototype.print = function () {
+    var cons = this;
+    var text = '(';
+    while (!isNil(cons)) {
+      text += cons.car.print();
+      if (!isNil(cons.cdr)) text += ' ';
+      cons = cons.cdr;
+    }
+    return text + ')';
+  };
+
+  String.prototype.print = function () {
+    return '"' + this.value + '"';
+  };
+
+  Number.prototype.print = function () {
+    return this.value;
+  };
+
+  Symbol.prototype.print = function () {
+    return this.name;
+  };
+
+  Nil.prototype.print = function () { return '()'; };
+
+
+
+  console.log(print(read(new StringStream('(123     456  abc       "foobar")'))));
+  console.log(print(read(new StringStream('12345678912345678998765'))));
 
 
 })();
