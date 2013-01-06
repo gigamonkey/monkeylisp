@@ -113,7 +113,11 @@
     if (digits.test(text)) {
       return new Number(parseInt(text, 10));
     } else {
-      return new Symbol(text);
+      if (text === 'nil') {
+        return nil;
+      } else {
+        return new Symbol(text);
+      }
     }
   }
 
@@ -121,7 +125,7 @@
 
     '(': readCons,
     '"': readString,
-    ')': function (input) { throw new Exception("Unexpected ')'"); }
+    ')': function (input) { throw new Error("Unexpected ')' at " + input.pos); }
 
   };
 
@@ -163,6 +167,9 @@
 
   console.log(print(read(new StringStream('(123     456  abc       "foobar")'))));
   console.log(print(read(new StringStream('12345678912345678998765'))));
+  console.log(print(read(new StringStream('(nil () nil)'))));
+  console.log(print(read(new StringStream('(defun foo (x) (+ x 10))'))));
+  console.log(print(read(new StringStream(')'))));
 
 
 })();
